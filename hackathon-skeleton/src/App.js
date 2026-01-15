@@ -1,24 +1,22 @@
-import logo from './logo.svg';
-import './App.css';
+// src/App.js
+import React from "react";
+import Layout from "./components/Layout";
+import Card from "./components/Card";
 
 function App() {
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <Layout>
+      <h1 style={{ fontSize: "1.5rem", marginBottom: "1rem" }}>Hackathon Skeleton</h1>
+
+      <Card title="Example Card 1">
+        example content block.
+      </Card>
+
+      <Card title="Example Card 2">
+        example content block 2.
+      </Card>
+
+    </Layout>
   );
 }
 
