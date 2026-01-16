@@ -1,17 +1,19 @@
 // src/components/Card.js
 import React from "react";
+import "./Card.css";
 
-export default function Card({ title, children }) {
+export default function Card({ title, children, badge, className = "" }) {
+  const cardClasses = `card ${className}`.trim();
+  
   return (
-    <div style={{
-      border: "1px solid #ccc",
-      borderRadius: "8px",
-      padding: "1rem",
-      marginBottom: "1rem",
-      boxShadow: "2px 2px 6px rgba(0,0,0,0.1)"
-    }}>
-      <h2 style={{ fontWeight: "bold", marginBottom: "0.5rem" }}>{title}</h2>
-      <div>{children}</div>
+    <div className={cardClasses}>
+      <div className="card-header">
+        <h2 className="card-title">{title}</h2>
+        {badge && <span className="card-badge">{badge}</span>}
+      </div>
+      <div className="card-content">
+        {children}
+      </div>
     </div>
   );
 }

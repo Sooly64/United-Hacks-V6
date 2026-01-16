@@ -1,15 +1,34 @@
 // src/components/Layout.js
 import React from "react";
+import "./Layout.css";
 
 export default function Layout({ children }) {
   return (
-    <div style={{ minHeight: "100vh", display: "flex", flexDirection: "column" }}>
-      <header style={{ padding: "1rem", background: "#222", color: "white", fontWeight: "bold" }}>
-        Hackathon App
+    <div className="layout-container">
+      <header className="header">
+        <div className="header-content">
+          <h1 className="header-title">Hackathon App</h1>
+          <nav className="header-nav">
+            <a href="#" className="nav-link">Project link 1</a>
+            <a href="#" className="nav-link">Project link 2</a>
+            <a href="#" className="nav-link">Project link 3</a>
+          </nav>
+        </div>
       </header>
-      <main style={{ flex: 1, padding: "1rem" }}>{children}</main>
-      <footer style={{ padding: "1rem", background: "#eee", textAlign: "center" }}>
-        © 2026 Hackathon
+      <main className="main-content">
+        <div className="content-wrapper">
+          {children}
+        </div>
+      </main>
+      <footer className="footer">
+        <div className="footer-content">
+          <p className="footer-text"> 2026 Hackathon</p>
+          <div className="footer-links">
+            <a href="https://github.com/Sooly64/United-Hacks-V6" className="footer-link">GitHub</a>
+            <a href="https://github.com/Sooly64/United-Hacks-V6/blob/main/README.md" className="footer-link">Documentation</a>
+            <a href="https://github.com/Sooly64/United-Hacks-V6/issues" className="footer-link">Contact</a>
+          </div>
+        </div>
       </footer>
     </div>
   );
