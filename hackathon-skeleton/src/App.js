@@ -13,7 +13,7 @@ function App() {
         <div className="hero-section">
           <h1 className="hero-title">ReachRight</h1>
           <p className="hero-subtitle">
-            - LinkedIn Networking Analysis -
+            - networking made easy -
           </p>
         </div>
         
