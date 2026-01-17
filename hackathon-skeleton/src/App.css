@@ -23,6 +23,69 @@ html, body {
 }
 
 /* ===================================
+   COLOR SCHEME VARIABLES - White & Tan Theme
+   =================================== */
+:root {
+  /* Primary Colors - Warm Tan Palette */
+  --tan-50: #fdf8f3;
+  --tan-100: #f5e6d3;
+  --tan-200: #ead0a8;
+  --tan-300: #d4a574;
+  --tan-400: #c19660;
+  --tan-500: #b08968;
+  --tan-600: #9c7c5a;
+  --tan-700: #8b6f47;
+  --tan-800: #7a5d3a;
+  --tan-900: #6b4e31;
+  
+  /* Neutral Colors - Warm Whites */
+  --white-50: #ffffff;
+  --white-100: #fafafa;
+  --white-200: #f5f5f5;
+  --white-300: #f0f0f0;
+  --white-400: #e5e5e5;
+  --white-500: #d4d4d4;
+  --white-600: #a3a3a3;
+  --white-700: #737373;
+  --white-800: #525252;
+  --white-900: #404040;
+  
+  /* Semantic Colors */
+  --background-primary: var(--white-50);
+  --background-secondary: var(--white-100);
+  --surface-primary: var(--white-50);
+  --surface-secondary: var(--tan-50);
+  --text-primary: var(--white-900);
+  --text-secondary: var(--white-700);
+  --text-muted: var(--white-600);
+  --accent-primary: var(--tan-500);
+  --accent-secondary: var(--tan-400);
+  --accent-hover: var(--tan-600);
+  --border-color: var(--tan-200);
+  --border-light: var(--tan-100);
+  --border-segment: var(--white-300);
+  
+  /* Opacity Values */
+  --glass-bg: rgba(245, 230, 211, 0.6);
+  --glass-border: rgba(196, 150, 96, 0.3);
+  --glass-hover: rgba(176, 137, 104, 0.1);
+  
+  /* Shadows - Soft and Warm */
+  --shadow-sm: 0 1px 2px 0 rgba(107, 78, 49, 0.05);
+  --shadow-md: 0 4px 6px -1px rgba(107, 78, 49, 0.1), 0 2px 4px -1px rgba(107, 78, 49, 0.06);
+  --shadow-lg: 0 10px 15px -3px rgba(107, 78, 49, 0.1), 0 4px 6px -2px rgba(107, 78, 49, 0.05);
+  --shadow-xl: 0 20px 25px -5px rgba(107, 78, 49, 0.1), 0 10px 10px -5px rgba(107, 78, 49, 0.04);
+  --shadow-glow: 0 0 20px rgba(176, 137, 104, 0.2);
+  
+  /* Border Radius - Bubbly */
+  --radius-sm: 8px;
+  --radius-md: 12px;
+  --radius-lg: 20px;
+  --radius-xl: 24px;
+  --radius-full: 50px;
+}
+
+/* ===================================
    APP STYLES
    =================================== */
 
@@ -31,9 +94,10 @@ html, body {
    =================================== */
 .app-container {
   min-height: 100vh;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  background: var(--background-primary);
   position: relative;
   overflow-x: hidden;
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
 }
 
 .app-container::before {
@@ -43,10 +107,9 @@ html, body {
   left: 0;
   right: 0;
   bottom: 0;
-  background: 
-    radial-gradient(circle at 20% 80%, rgba(120, 119, 198, 0.3) 0%, transparent 50%),
-    radial-gradient(circle at 80% 20%, rgba(255, 119, 198, 0.3) 0%, transparent 50%),
-    radial-gradient(circle at 40% 40%, rgba(255, 219, 98, 0.2) 0%, transparent 50%);
+  background: radial-gradient(circle at 20% 80%, var(--tan-50) 0%, transparent 50%),
+              radial-gradient(circle at 80% 20%, var(--tan-100) 0%, transparent 50%),
+              radial-gradient(circle at 40% 40%, var(--white-100) 0%, transparent 50%);
   pointer-events: none;
   z-index: 1;
 }
@@ -58,29 +121,28 @@ html, body {
   position: relative;
   z-index: 2;
   text-align: center;
-  padding: 3rem 1rem 2rem;
+  padding: 6rem 1rem 3rem;
   animation: fadeInUp 0.8s ease-out;
 }
 
 .hero-title {
-  font-size: 3.5rem;
+  font-size: 15rem;
   font-weight: 800;
-  margin-bottom: 1rem;
-  background: linear-gradient(135deg, #ffffff 0%, #f0f0f0 100%);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
-  text-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+  margin-bottom: 2rem;
+  color: var(--tan-600);
   letter-spacing: -0.02em;
-  line-height: 1.1;
+  line-height: 0.8;
+  text-shadow: var(--shadow-lg);
+  word-wrap: break-word;
+  overflow-wrap: break-word;
 }
 
 .hero-subtitle {
-  font-size: 1.25rem;
-  color: rgba(255, 255, 255, 0.9);
-  margin-bottom: 2rem;
+  font-size: 3rem;
+  color: var(--tan-500);
+  margin-bottom: 4rem;
   font-weight: 300;
-  max-width: 600px;
+  max-width: 800px;
   margin-left: auto;
   margin-right: auto;
 }
@@ -92,7 +154,7 @@ html, body {
   position: relative;
   z-index: 2;
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
   gap: 2rem;
   padding: 0 1rem 3rem;
   max-width: 1200px;
@@ -130,6 +192,15 @@ html, body {
   }
   50% {
     transform: scale(1.05);
+  }
+}
+
+@keyframes float {
+  0%, 100% {
+    transform: translateY(0px);
+  }
+  50% {
+    transform: translateY(-10px);
   }
 }
 
@@ -179,4 +250,50 @@ html, body {
 
 .hover-lift:hover {
   transform: translateY(-5px);
+}
+
+.bubble-segment {
+  border: 2px solid var(--border-color);
+  border-radius: var(--radius-lg);
+  position: relative;
+  overflow: hidden;
+}
+
+.bubble-segment::before {
+  content: '';
+  position: absolute;
+  top: -2px;
+  left: -2px;
+  right: -2px;
+  bottom: -2px;
+  background: linear-gradient(45deg, 
+    var(--tan-200) 0%, 
+    var(--tan-100) 25%, 
+    var(--tan-200) 50%, 
+    var(--tan-100) 75%, 
+    var(--tan-200) 100%);
+  border-radius: var(--radius-lg);
+  z-index: -1;
+  animation: borderFlow 3s linear infinite;
+}
+
+.bubble-segment::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: var(--surface-primary);
+  border-radius: calc(var(--radius-lg) - 4px);
+  z-index: -1;
+}
+
+@keyframes borderFlow {
+  0% {
+    transform: translateX(-100%);
+  }
+  100% {
+    transform: translateX(100%);
+  }
 }
