@@ -1,7 +1,9 @@
 // src/services/linkedinService.js
 import axios from 'axios';
 
-const API_BASE_URL = 'http://localhost:8000'; // Your FastAPI server
+const API_BASE_URL = process.env.NODE_ENV === 'production' 
+  ? process.env.REACT_APP_API_URL || 'https://your-railway-app.railway.app'
+  : 'http://localhost:8000';
 
 const linkedinAPI = axios.create({
   baseURL: API_BASE_URL,

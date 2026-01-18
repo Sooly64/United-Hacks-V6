@@ -18,7 +18,7 @@ const parseMarkdown = (text) => {
     // Numbered lists (1. item)
     .replace(/^\d+\.\s+(.+)$/gm, '<li>$1</li>')
     // Bullet points (• item or - item or * item)
-    .replace(/^[\-\*]\s+(.+)$/gm, '<li>$1</li>')
+    .replace(/^[-*]\s+(.+)$/gm, '<li>$1</li>')
     // Wrap consecutive list items in ul tags
     .replace(/(<li>.*?<\/li>)(\s*<li>.*?<\/li>)*/gs, '<ul>$&</ul>')
     // Line breaks
