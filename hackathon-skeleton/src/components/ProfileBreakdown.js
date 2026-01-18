@@ -7,24 +7,32 @@ const parseMarkdown = (text) => {
   if (!text) return '';
   
   return text
+    // Headers (# ## ###)
+    .replace(/^###\s+(.+)$/gm, '<h3>$1</h3>')
+    .replace(/^##\s+(.+)$/gm, '<h2>$1</h2>')
+    .replace(/^#\s+(.+)$/gm, '<h1>$1</h1>')
     // Bold text (**text**)
     .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
     // Italic text (*text*)
     .replace(/\*(.*?)\*/g, '<em>$1</em>')
     // Numbered lists (1. item)
     .replace(/^\d+\.\s+(.+)$/gm, '<li>$1</li>')
-    // Bullet points (• item or - item)
-    .replace(/^[\•\-]\s+(.+)$/gm, '<li>$1</li>')
+    // Bullet points (• item or - item or * item)
+    .replace(/^[\•\-\*]\s+(.+)$/gm, '<li>$1</li>')
+    // Wrap consecutive list items in ul tags
+    .replace(/(<li>.*?<\/li>)(\s*<li>.*?<\/li>)*/gs, '<ul>$&</ul>')
     // Line breaks
     .replace(/\n\n/g, '</p><p>')
     .replace(/\n/g, '<br>')
     // Wrap in paragraphs
     .replace(/^(.+)$/gm, '<p>$1</p>')
-    // Clean up extra paragraphs around lists
+    // Clean up extra paragraphs around lists and headers
+    .replace(/<p><[h1-6]>/g, '<$1')
+    .replace(/<\/[h1-6]><\/p>/g, '</$1>')
+    .replace(/<p><ul>/g, '<ul>')
+    .replace(/<\/ul><\/p>/g, '</ul>')
     .replace(/<p><li>/g, '<li>')
-    .replace(/<\/li><\/p>/g, '</li>')
-    // Wrap lists in ul tags
-    .replace(/(<li>.*?<\/li>)/s, '<ul>$1</ul>');
+    .replace(/<\/li><\/p>/g, '</li>');
 };
 
 export default function ProfileBreakdown({ profiles, analysis }) {
@@ -46,7 +54,7 @@ export default function ProfileBreakdown({ profiles, analysis }) {
     // Display AI analysis with simplified profile data
     return (
       <div className="profile-breakdown">
-        <h2 className="breakdown-header">🤖 AI-Powered Profile Analysis</h2>
+        <h2 className="breakdown-header">How You Can Reach — Right</h2>
         
         <div className="profiles-grid">
           <div className="profile-card">
