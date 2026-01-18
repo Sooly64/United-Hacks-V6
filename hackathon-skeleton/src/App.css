@@ -48,6 +48,90 @@ html, body {
   --white-600: #a3a3a3;
   --white-700: #737373;
   --white-800: #525252;
+  
+  /* Status Colors */
+  --error-red: #dc3545;
+  --error-bg: #f8d7da;
+  --success-green: #28a745;
+  --warning-yellow: #ffc107;
+}
+
+/* ===================================
+   LOADING & ERROR STATES
+   =================================== */
+.loading-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 3rem 2rem;
+  text-align: center;
+}
+
+.loading-spinner {
+  width: 40px;
+  height: 40px;
+  border: 4px solid var(--tan-200);
+  border-top: 4px solid var(--tan-500);
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+  margin-bottom: 1rem;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+.loading-state p {
+  color: var(--white-700);
+  font-size: 1rem;
+  margin: 0;
+}
+
+.error-message {
+  background-color: var(--error-bg);
+  color: var(--error-red);
+  padding: 1rem 1.5rem;
+  border-radius: 8px;
+  margin: 2rem 0;
+  border: 1px solid var(--error-red);
+  text-align: center;
+  font-weight: 500;
+}
+
+/* Profile basic info styles */
+.profile-basic-info {
+  background: var(--tan-50);
+  padding: 1rem;
+  border-radius: 8px;
+  margin-bottom: 1rem;
+  border-left: 4px solid var(--tan-400);
+}
+
+.profile-headline {
+  font-weight: 600;
+  color: var(--tan-800);
+  margin-bottom: 0.5rem;
+  font-size: 1.1rem;
+}
+
+.profile-company {
+  color: var(--tan-600);
+  margin-bottom: 0.25rem;
+  font-weight: 500;
+}
+
+.profile-location {
+  color: var(--white-600);
+  font-size: 0.9rem;
+  margin: 0;
+}
+
+/* ===================================
+   ADDITIONAL CSS VARIABLES
+   =================================== */
+:root {
   --white-900: #404040;
   
   /* Semantic Colors */

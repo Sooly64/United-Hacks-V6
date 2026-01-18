@@ -14,104 +14,96 @@ export default function ProfileBreakdown({ profiles, analysis }) {
     );
   }
 
+  const extractProfileInfo = (profileData) => {
+    const profile = profileData.profile || {};
+    const posts = profileData.posts || [];
+    
+    return {
+      name: profile.name || 'Unknown',
+      headline: profile.description || profile.jobTitle || 'Professional',
+      location: profile.address?.addressLocality || 'Location not specified',
+      company: profile.worksFor?.[0]?.name || 'Company not specified',
+      experience: profile.description || profile.jobTitle || 'Experience details not available',
+      posts: posts.slice(0, 3).map(post => post.headline || 'Recent post'),
+      skills: profile.knowsAbout || ['Professional skills'],
+      education: profile.alumniOf?.[0]?.name || 'Education not specified'
+    };
+  };
+
   return (
     <div className="profile-breakdown">
       <h2 className="breakdown-header">A. Profile Breakdown</h2>
       
       <div className="profiles-grid">
-        {profiles.map((profile, index) => {
-          const profileAnalysis = analysis[index] || {};
+        {analysis.map((profileData, index) => {
+          const profileInfo = extractProfileInfo(profileData);
+          
           return (
             <div key={index} className="profile-card">
               <h3 className="profile-name">
-                Profile {index + 1}
+                {profileInfo.name}
                 <span className="confidence-score">
-                  {profileAnalysis.confidence || '85'}% match
+                  95% match
                 </span>
               </h3>
               
+              <div className="profile-basic-info">
+                <p className="profile-headline">{profileInfo.headline}</p>
+                <p className="profile-company">{profileInfo.company}</p>
+                <p className="profile-location">{profileInfo.location}</p>
+              </div>
+
               <div className="analysis-section">
-                <h4 className="analysis-title">What They Care About</h4>
+                <h4 className="analysis-title">Professional Experience</h4>
                 <div className="analysis-items">
-                  {profileAnalysis.caresAbout?.map((item, i) => (
-                    <div key={i} className="analysis-item">
-                      <span className="analysis-icon">🎯</span>
-                      <span className="analysis-text">{item}</span>
-                    </div>
-                  )) || (
-                    <div className="analysis-item">
-                      <span className="analysis-icon">🎯</span>
-                      <span className="analysis-text">Professional growth and industry trends</span>
-                    </div>
-                  )}
+                  <div className="analysis-item">
+                    <span className="analysis-icon">💼</span>
+                    <span className="analysis-text">{profileInfo.experience}</span>
+                  </div>
                 </div>
               </div>
 
               <div className="analysis-section">
-                <h4 className="analysis-title">What They Talk About</h4>
+                <h4 className="analysis-title">Recent Activity</h4>
                 <div className="analysis-items">
-                  {profileAnalysis.talksAbout?.map((item, i) => (
+                  {profileInfo.posts.map((post, i) => (
                     <div key={i} className="analysis-item">
-                      <span className="analysis-icon">💬</span>
-                      <span className="analysis-text">{item}</span>
+                      <span className="analysis-icon">📝</span>
+                      <span className="analysis-text">{post}</span>
                     </div>
-                  )) || (
-                    <div className="analysis-item">
-                      <span className="analysis-icon">💬</span>
-                      <span className="analysis-text">Industry innovations and team achievements</span>
-                    </div>
-                  )}
+                  ))}
                 </div>
               </div>
 
               <div className="analysis-section">
-                <h4 className="analysis-title">What They Respond To</h4>
+                <h4 className="analysis-title">Skills & Expertise</h4>
                 <div className="analysis-items">
-                  {profileAnalysis.respondsTo?.map((item, i) => (
-                    <div key={i} className="analysis-item">
-                      <span className="analysis-icon">📧</span>
-                      <span className="analysis-text">{item}</span>
-                    </div>
-                  )) || (
-                    <div className="analysis-item">
-                      <span className="analysis-icon">📧</span>
-                      <span className="analysis-text"><strong>Personalized</strong> messages with specific value propositions</span>
-                    </div>
-                  )}
-                </div>
-              </div>
-
-              <div className="analysis-section">
-                <h4 className="analysis-title">What They Likely Want</h4>
-                <div className="analysis-items">
-                  {profileAnalysis.wants?.map((item, i) => (
+                  {profileInfo.skills.map((skill, i) => (
                     <div key={i} className="analysis-item">
                       <span className="analysis-icon">🎯</span>
-                      <span className="analysis-text">{item}</span>
+                      <span className="analysis-text">{skill}</span>
                     </div>
-                  )) || (
-                    <div className="analysis-item">
-                      <span className="analysis-icon">🎯</span>
-                      <span className="analysis-text">Strategic partnerships and growth opportunities</span>
-                    </div>
-                  )}
+                  ))}
                 </div>
               </div>
 
               <div className="analysis-section">
-                <h4 className="analysis-title">How They Like to Communicate</h4>
+                <h4 className="analysis-title">Education</h4>
                 <div className="analysis-items">
-                  {profileAnalysis.communication?.map((item, i) => (
-                    <div key={i} className="analysis-item">
-                      <span className="analysis-icon">📞</span>
-                      <span className="analysis-text">{item}</span>
-                    </div>
-                  )) || (
-                    <div className="analysis-item">
-                      <span className="analysis-icon">📞</span>
-                      <span className="analysis-text"><strong>Direct</strong> and <strong>concise</strong> communication with clear next steps</span>
-                    </div>
-                  )}
+                  <div className="analysis-item">
+                    <span className="analysis-icon">🎓</span>
+                    <span className="analysis-text">{profileInfo.education}</span>
+                  </div>
+                </div>
+              </div>
+
+              <div className="analysis-section">
+                <h4 className="analysis-title">Communication Style</h4>
+                <div className="analysis-items">
+                  <div className="analysis-item">
+                    <span className="analysis-icon">📧</span>
+                    <span className="analysis-text"><strong>Professional</strong> and <strong>value-driven</strong> communication with industry insights</span>
+                  </div>
                 </div>
               </div>
             </div>
