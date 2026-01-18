@@ -1,9 +1,17 @@
 // src/services/linkedinService.js
 import axios from 'axios';
 
-const API_BASE_URL = process.env.NODE_ENV === 'production' 
-  ? process.env.REACT_APP_API_URL || 'https://your-railway-app.railway.app'
+const rawApiBaseUrl = process.env.NODE_ENV === 'production'
+  ? (process.env.REACT_APP_API_URL || 'united-hacks-v6-production.up.railway.app')
   : 'http://localhost:8000';
+
+const API_BASE_URL = (() => {
+  if (!rawApiBaseUrl) return rawApiBaseUrl;
+  const withProtocol = /^https?:\/\//i.test(rawApiBaseUrl)
+    ? rawApiBaseUrl
+    : `https://${rawApiBaseUrl}`;
+  return withProtocol.endsWith('/') ? withProtocol.slice(0, -1) : withProtocol;
+})();
 
 const linkedinAPI = axios.create({
   baseURL: API_BASE_URL,
