@@ -57,7 +57,8 @@ async def scrape_profile(urls: List[str]) -> List[Dict]:
             profile_data = parse_profile(response)
             data.append(profile_data)
         except Exception as e:
-            log.error("An occured while scraping profile pages", e)
+            log.error(f"Error scraping profile: {e}")
+            log.error(f"Response context: {response.context}")
             pass
     log.success(f"scraped {len(data)} profiles from Linkedin")
     return data
