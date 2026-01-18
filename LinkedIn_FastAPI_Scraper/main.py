@@ -28,7 +28,7 @@ app = FastAPI()
 # 2. Allow React to call your API
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["http://localhost:3000", "http://localhost:3001", "https://*"],  # Allow all origins for now
+    allow_origins=["http://localhost:3000", "http://localhost:3001", "https://united-hacks-v6.vercel.app"],  # Your specific Vercel domain
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
