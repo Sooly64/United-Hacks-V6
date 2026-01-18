@@ -13,8 +13,17 @@ from urllib.parse import urlencode, quote_plus
 from parsel import Selector
 from loguru import logger as log
 from scrapfly import ScrapeConfig, ScrapflyClient, ScrapeApiResponse
+from dotenv import load_dotenv
 
-SCRAPFLY = ScrapflyClient(key=os.environ["SCRAPFLY_API_KEY"])
+# Load environment variables
+load_dotenv('config.env')
+
+# Get API key from environment
+SCRAPFLY_API_KEY = os.environ.get("SCRAPFLY_API_KEY")
+if not SCRAPFLY_API_KEY:
+    raise ValueError("SCRAPFLY_API_KEY environment variable is required")
+
+SCRAPFLY = ScrapflyClient(key=SCRAPFLY_API_KEY)
 
 BASE_CONFIG = {
     # bypass linkedin.com web scraping blocking

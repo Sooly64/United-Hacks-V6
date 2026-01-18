@@ -1,9 +1,26 @@
 from fastapi import FastAPI, HTTPException
 from pydantic import BaseModel
 from fastapi.middleware.cors import CORSMiddleware
-from typing import List, Optional, Dict, Any
+from typing import List, Optional
+import openai
+import os
 import asyncio
-import linkedin
+from dotenv import load_dotenv
+
+# Load environment variables from config file
+load_dotenv('config.env')
+
+# API keys should only be loaded from environment variables
+FEATHERLESS_API_KEY = os.environ.get('FEATHERLESS_API_KEY')
+
+if not FEATHERLESS_API_KEY:
+    raise ValueError("FEATHERLESS_API_KEY environment variable is required")
+
+# Initialize OpenAI client
+client = openai.OpenAI(
+    base_url='https://api.featherless.ai/v1',
+    api_key=FEATHERLESS_API_KEY
+)
 
 # 1. Make your FastAPI app
 app = FastAPI()
@@ -11,7 +28,7 @@ app = FastAPI()
 # 2. Allow React to call your API
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["http://localhost:3000"],  # React dev server
+    allow_origins=["http://localhost:3000", "http://localhost:3001"],  # React dev server
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
@@ -21,119 +38,89 @@ app.add_middleware(
 class ProfileRequest(BaseModel):
     profile_urls: List[str]
 
-class CompanyRequest(BaseModel):
-    company_urls: List[str]
-
-class JobSearchRequest(BaseModel):
-    keyword: str
-    location: str
-    max_pages: Optional[int] = None
-
-class JobsRequest(BaseModel):
-    job_urls: List[str]
-
-class ArticlesRequest(BaseModel):
-    article_urls: List[str]
-
 # 4. The API endpoints
 @app.post("/scrape/profile")
 async def scrape_profile(req: ProfileRequest):
+    """Return simplified Bill Gates profile data"""
     try:
-        # For MVP demo - return mock data with the requested profile info
-        import json
+        # Minimal profile data for low token usage
+        profile_data = {
+            "name": "Bill Gates",
+            "jobTitle": "Technology Advisor, Co-chair Bill & Melinda Gates Foundation",
+            "location": "Seattle, Washington",
+            "education": "Harvard University",
+            "description": "Co-founder of Microsoft, philanthropist, global health and education advocate"
+        }
         
-        # Load sample data
-        with open('results/profile.json', 'r') as f:
-            sample_data = json.load(f)
-        
-        # Customize the data to show it's "working" for the demo
-        if sample_data:
-            # Update with a mock version of the requested profile
-            profile_name = req.profile_urls[0].split('/')[-1] if req.profile_urls[0].split('/')[-1] else "Demo Profile"
-            sample_data[0]['profile']['name'] = f"Demo User ({profile_name})"
-            sample_data[0]['profile']['identifier'] = req.profile_urls[0]
-            
-        return {"success": True, "data": sample_data}
+        return {"success": True, "data": [profile_data]}
         
     except Exception as e:
         raise HTTPException(
             status_code=500, 
-            detail=f"Demo failed: {str(e)}"
+            detail=f"Profile data failed: {str(e)}"
         )
 
-@app.post("/scrape/profile/mock")
-async def scrape_profile_mock(req: ProfileRequest):
-    """Mock endpoint that always returns sample data"""
-    try:
-        import json
-        with open('results/profile.json', 'r') as f:
-            sample_data = json.load(f)
-        return {"success": True, "data": sample_data}
-    except Exception as e:
-        raise HTTPException(status_code=500, detail=str(e))
 
-@app.post("/scrape/company")
-async def scrape_company(req: CompanyRequest):
+@app.post("/analyze/profile")
+async def analyze_profile(req: ProfileRequest):
     try:
-        # Configure scraper
-        linkedin.BASE_CONFIG["cache"] = False
-        linkedin.BASE_CONFIG["debug"] = True
+        # Get simplified profile data
+        profile_data = await scrape_profile(req)
         
-        # Scrape companies
-        result = await linkedin.scrape_company(urls=req.company_urls)
-        return {"success": True, "data": result}
-    except Exception as e:
-        raise HTTPException(status_code=500, detail=str(e))
+        if not profile_data["success"] or not profile_data["data"]:
+            raise HTTPException(status_code=400, detail="No profile data available")
+        
+        profile = profile_data["data"][0]
+        
+        # Simple AI analysis prompt with minimal data
+        analysis_prompt = f"""
+Analyze this profile and give student networking advice:
+Name: {profile.get('name')}
+Role: {profile.get('jobTitle')}
+Location: {profile.get('location')}
+Education: {profile.get('education')}
+About: {profile.get('description')}
 
-@app.post("/scrape/job-search")
-async def scrape_job_search(req: JobSearchRequest):
-    try:
-        # Configure scraper
-        linkedin.BASE_CONFIG["cache"] = False
-        linkedin.BASE_CONFIG["debug"] = True
+Give specific networking advice in 2-3 sentences. Focus on how students should connect.
+"""
         
-        # Scrape job search
-        result = await linkedin.scrape_job_search(
-            keyword=req.keyword,
-            location=req.location,
-            max_pages=req.max_pages
-        )
-        return {"success": True, "data": result}
+        print(f"Sending to AI: {analysis_prompt[:100]}...")
+        
+        # Get AI analysis with proper timeout
+        try:
+            # Create the coroutine by running sync call in thread
+            api_call = asyncio.to_thread(
+                client.chat.completions.create,
+                model="deepseek-ai/DeepSeek-R1-Distill-Llama-70B",
+                messages=[{"role": "user", "content": analysis_prompt}],
+                max_tokens=150
+            )
+            
+            # Wait for the coroutine with timeout
+            response = await asyncio.wait_for(api_call, timeout=30.0)
+            
+            ai_analysis = response.choices[0].message.content
+            # Clean up any thinking tags or special formatting
+            ai_analysis = ai_analysis.replace('</think>', '').replace('</think>', '').strip()
+            print(f"AI Response: {ai_analysis[:100]}...")
+        except asyncio.TimeoutError:
+            raise HTTPException(status_code=500, detail="AI request timed out after 30 seconds")
+        except Exception as ai_error:
+            raise HTTPException(status_code=500, detail=f"AI API error: {str(ai_error)}")
+        
+        return {
+            "success": True, 
+            "profile": profile,
+            "ai_analysis": ai_analysis
+        }
+        
     except Exception as e:
-        raise HTTPException(status_code=500, detail=str(e))
+        raise HTTPException(status_code=500, detail=f"AI analysis failed: {str(e)}")
 
-@app.post("/scrape/jobs")
-async def scrape_jobs(req: JobsRequest):
-    try:
-        # Configure scraper
-        linkedin.BASE_CONFIG["cache"] = False
-        linkedin.BASE_CONFIG["debug"] = True
-        
-        # Scrape individual jobs
-        result = await linkedin.scrape_jobs(urls=req.job_urls)
-        return {"success": True, "data": result}
-    except Exception as e:
-        raise HTTPException(status_code=500, detail=str(e))
-
-@app.post("/scrape/articles")
-async def scrape_articles(req: ArticlesRequest):
-    try:
-        # Configure scraper
-        linkedin.BASE_CONFIG["cache"] = False
-        linkedin.BASE_CONFIG["debug"] = True
-        
-        # Scrape articles
-        result = await linkedin.scrape_articles(urls=req.article_urls)
-        return {"success": True, "data": result}
-    except Exception as e:
-        raise HTTPException(status_code=500, detail=str(e))
 
 @app.get("/")
 def root():
-    return {"message": "LinkedIn Scraper API", "endpoints": [
+    return {"message": "LinkedIn Profile Analyzer API", "endpoints": [
         "/scrape/profile",
-        "/scrape/company", 
-        "/scrape/job-search",
-        "/scrape/jobs",
-        "/scrape/articles"
+        "/analyze/profile"
     ]}

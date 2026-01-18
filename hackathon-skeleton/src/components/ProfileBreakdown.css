@@ -163,8 +163,37 @@
 }
 
 .analysis-text strong {
-  color: var(--tan-600);
   font-weight: 600;
+  color: var(--tan-800);
+}
+
+.analysis-text em {
+  font-style: italic;
+  color: var(--tan-700);
+}
+
+.analysis-text ul {
+  margin: 0.5rem 0;
+  padding-left: 1.5rem;
+  list-style-type: disc;
+}
+
+.analysis-text li {
+  margin-bottom: 0.5rem;
+  color: var(--white-700);
+  line-height: 1.5;
+}
+
+.analysis-text p {
+  margin: 0.75rem 0;
+  color: var(--white-700);
+  line-height: 1.6;
+}
+
+.analysis-text br {
+  display: block;
+  margin: 0.25rem 0;
+  content: "";
 }
 
 .confidence-score {

@@ -2,6 +2,31 @@
 import React from "react";
 import "./ProfileBreakdown.css";
 
+// Simple Markdown parser for basic formatting
+const parseMarkdown = (text) => {
+  if (!text) return '';
+  
+  return text
+    // Bold text (**text**)
+    .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
+    // Italic text (*text*)
+    .replace(/\*(.*?)\*/g, '<em>$1</em>')
+    // Numbered lists (1. item)
+    .replace(/^\d+\.\s+(.+)$/gm, '<li>$1</li>')
+    // Bullet points (• item or - item)
+    .replace(/^[\•\-]\s+(.+)$/gm, '<li>$1</li>')
+    // Line breaks
+    .replace(/\n\n/g, '</p><p>')
+    .replace(/\n/g, '<br>')
+    // Wrap in paragraphs
+    .replace(/^(.+)$/gm, '<p>$1</p>')
+    // Clean up extra paragraphs around lists
+    .replace(/<p><li>/g, '<li>')
+    .replace(/<\/li><\/p>/g, '</li>')
+    // Wrap lists in ul tags
+    .replace(/(<li>.*?<\/li>)/s, '<ul>$1</ul>');
+};
+
 export default function ProfileBreakdown({ profiles, analysis }) {
   if (!analysis) {
     return (
@@ -14,6 +39,57 @@ export default function ProfileBreakdown({ profiles, analysis }) {
     );
   }
 
+  // Check if this is AI analysis or regular profile data
+  const isAIAnalysis = analysis.ai_analysis || analysis.profile?.ai_analysis;
+  
+  if (isAIAnalysis) {
+    // Display AI analysis with simplified profile data
+    return (
+      <div className="profile-breakdown">
+        <h2 className="breakdown-header">🤖 AI-Powered Profile Analysis</h2>
+        
+        <div className="profiles-grid">
+          <div className="profile-card">
+            <h3 className="profile-name">
+              {analysis.profile?.name || 'Unknown Profile'}
+              <span className="confidence-score">
+                AI Analysis
+              </span>
+            </h3>
+            
+            <div className="profile-basic-info">
+              <p className="profile-headline">{analysis.profile?.jobTitle || 'Professional'}</p>
+              <p className="profile-location">{analysis.profile?.location || 'Location not specified'}</p>
+              <p className="profile-education">🎓 {analysis.profile?.education || 'Education not specified'}</p>
+            </div>
+            
+            <div className="analysis-section">
+              <h4 className="analysis-title">🎓 How to Network</h4>
+              <div className="analysis-items">
+                <div className="analysis-item">
+                  <span 
+                    className="analysis-text" 
+                    dangerouslySetInnerHTML={{ __html: parseMarkdown(analysis.ai_analysis) }}
+                  />
+                </div>
+              </div>
+            </div>
+
+            <div className="analysis-section">
+              <h4 className="analysis-title">📈 About</h4>
+              <div className="analysis-items">
+                <div className="analysis-item">
+                  <span className="analysis-text">{analysis.profile?.description || 'No description available'}</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    );
+  }
+  
+  // Fallback to original profile display for non-AI analysis
   const extractProfileInfo = (profileData) => {
     const profile = profileData.profile || {};
     const posts = profileData.posts || [];

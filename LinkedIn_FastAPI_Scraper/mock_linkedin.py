@@ -40,7 +40,7 @@ async def scrape_profile(urls: List[str]) -> List[Dict]:
 async def scrape_company(urls: List[str]) -> List[Dict]:
     """mock scrape company pages"""
     return [{"overview": {}, "life": {}} for _ in urls]
-
+ 
 async def scrape_job_search(keyword: str, location: str, max_pages: int = None) -> List[Dict]:
     """mock scrape job search"""
     return []

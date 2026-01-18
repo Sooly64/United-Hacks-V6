@@ -19,6 +19,14 @@ export const linkedinService = {
     return response.data;
   },
 
+  // Analyze profiles with AI
+  analyzeProfile: async (profileUrls) => {
+    const response = await linkedinAPI.post('/analyze/profile', {
+      profile_urls: profileUrls
+    });
+    return response.data;
+  },
+
   // Scrape companies
   scrapeCompanies: async (companyUrls) => {
     const response = await linkedinAPI.post('/scrape/company', {

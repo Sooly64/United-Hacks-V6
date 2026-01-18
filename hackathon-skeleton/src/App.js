@@ -18,13 +18,14 @@ function App() {
     setAnalysis(null);
     
     try {
-      const response = await linkedinService.scrapeProfiles(profileUrls);
+      // Use AI analysis endpoint for better insights
+      const response = await linkedinService.analyzeProfile(profileUrls);
       
-      if (response.success && response.data) {
+      if (response.success) {
         setProfiles(profileUrls);
-        setAnalysis(response.data);
+        setAnalysis(response); // Use the full response object
       } else {
-        setError('Failed to scrape profile data');
+        setError('Failed to analyze profile data');
       }
     } catch (err) {
       const errorMessage = err.response?.data?.detail || err.message || 'An error occurred while analyzing the profile';

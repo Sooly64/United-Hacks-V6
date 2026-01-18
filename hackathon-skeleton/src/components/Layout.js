@@ -4,16 +4,6 @@ import "./Layout.css";
 export default function Layout({ children }) {
   return (
     <div className="layout-container">
-      <header className="header">
-        <div className="header-content">
-          <h1 className="header-title">ReachRight</h1>
-          <nav className="header-nav">
-            {/*  <a href="#" className="nav-link">Project link 1</a>
-            <a href="#" className="nav-link">Project link 2</a>
-            <a href="#" className="nav-link">Project link 3</a> */}
-          </nav>
-        </div>
-      </header>
       <main className="main-content">
         <div className="content-wrapper">
           {children}
